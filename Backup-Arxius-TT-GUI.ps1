@@ -232,7 +232,7 @@ $Button8.Add_Click({Refresh})
 function dilluns{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_dilluns | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo) 
     $desmapeig
     Refresh
 }
@@ -240,7 +240,7 @@ function dilluns{
 function dimarts{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_dimarts | foreach {$TextBox1.AppendText($_ + "`r`n")}  
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo)
     $desmapeig
     Refresh
 }
@@ -248,7 +248,7 @@ function dimarts{
 function dimecres{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_dimecres | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo)
     $desmapeig
     Refresh
 }
@@ -256,7 +256,7 @@ function dimecres{
 function dijous{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_dijous | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo)
     $desmapeig
     Refresh
 }
@@ -264,7 +264,7 @@ function dijous{
 function divendres{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_divendres | foreach {$TextBox1.AppendText($_ + "`r`n")}  
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo)
     $desmapeig
     Refresh
 }
@@ -276,7 +276,7 @@ function all{
     robocopy.exe $ruta_origen $ruta_desti $backup_dimecres | foreach {$TextBox1.AppendText($_ + "`r`n")} 
     robocopy.exe $ruta_origen $ruta_desti $backup_dijous | foreach {$TextBox1.AppendText($_ + "`r`n")}  
     robocopy.exe $ruta_origen $ruta_desti $backup_divendres | foreach {$TextBox1.AppendText($_ + "`r`n")}
-    $textbox1.AppendText("COPIA FINALITZADA") 
+    $textbox1.AppendText($textRobo)
     $desmapeig
     Refresh
 }
@@ -287,7 +287,6 @@ function Neteja{
 
 
 function Refresh{
-
    
     $DataModDillunsLocal = Get-Item ("$ruta_desti\$backup_dilluns") 
     $DataModDimartsLocal = Get-Item ("$ruta_desti\$backup_dimarts") 
@@ -351,20 +350,20 @@ function Refresh{
 #----------------------------------------------------------------------------------------------------------
 
 #Omet errors (per si no existeix copia en local)
-$ErrorActionPreference= 'silentlycontinue'
+$ErrorActionPreference= "silentlyContinue"
 
 #Variables usuari/pass
-$User = "Domain\user"
-$Pwd = "Pa$w0rd"
+$User = "DOMAIN\User"
+$Pwd = "Pa$$w0rd"
 
 #Variables d'origen i destí
-$ruta_origen = "\\x.x.x.x\Client"
+$ruta_origen = "\\x.x.x.x\folder"
 $ruta_desti = "C:\Backup"
 $backup_dilluns = "scepinstall.exe"
-$backup_dimarts = "_scepinstall.exe"
-$backup_dimecres = "_scepinstall.exe"
-$backup_dijous = "_scepinstall.exe"
-$backup_divendres = "_scepinstall.exe"
+$backup_dimarts = "scepinstall.exe"
+$backup_dimecres = "scepinstall.exe"
+$backup_dijous = "scepinstall.exe"
+$backup_divendres = "scepinstall.exe"
 
 #Mapeig destí amb validació / desmapeig
 $mapeig = net use $ruta_origen /user:$User $Pwd
@@ -374,6 +373,9 @@ $desmapeig = net use $ruta_origen /d
 If(!(test-path $ruta_desti)){
     New-Item -ItemType Directory -Force -Path $ruta_desti | Out-Null
 }
+
+#Missatge final de Robocopy
+$textRobo = "----------`r`n FINAL DE ROBOCOPY `r`n----------"
 
 Refresh
 
