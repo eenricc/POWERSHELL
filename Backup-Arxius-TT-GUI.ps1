@@ -2,23 +2,26 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.drawing
 
-#FORMULARI PROPIETATS
+#----------------------------------------------------------------------------------------------------------
+#FORMULARI
+#----------------------------------------------------------------------------------------------------------
+
+#PROPIETATS DEL FORMULARI
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '620,350'
-$Form.text                       = "BACKUP"
-$Form.TopMost                    = $false
-$Form.MinimizeBox                = $false
+$Form.text                       = "ADMINISTRACIÓ DE BACKUPS"
+$Form.TopMost                    = $true
+$Form.MinimizeBox                = $true
 $Form.MaximizeBox                = $false
 $Form.FormBorderStyle            = 'FixedDialog'
 $Form.StartPosition              = "CenterScreen"
 $Form.Icon                       = $null
 
-#PESTANYES PROPIETATS 
+#PROPIETATS DE LES PESTANYES
 $tabControl                      = New-object System.Windows.Forms.TabControl
 $tabControl.Size                 = '620,350'
 
-#PESTANYA 1
-
+##PESTANYA 1
 $Tab1                            = New-Object System.Windows.Forms.TabPage
 $Tab1.Text                       = "Backup”
 
@@ -71,7 +74,7 @@ $TextBox1.location               = New-Object System.Drawing.Point(20,70)
 $TextBox1.Font                   = 'Microsoft Sans Serif,10'
 
 $Button6                         = New-Object system.Windows.Forms.Button
-$Button6.text                    = "Clear"
+$Button6.text                    = "Neteja"
 $Button6.width                   = 160
 $Button6.height                  = 30
 $Button6.location                = New-Object System.Drawing.Point(440,285)
@@ -86,8 +89,7 @@ $Button7.location                = New-Object System.Drawing.Point(20,285)
 $Button7.Font                    = 'Microsoft Sans Serif,10'
 $Button7.Add_Click({All})
 
-#PESTANYA2
-
+##PESTANYA2
 $Tab2                            = New-Object System.Windows.Forms.TabPage
 $Tab2.Text                       = "Estat copia”
 
@@ -132,19 +134,19 @@ $Label5.location                 = New-Object System.Drawing.Point(100,220)
 $Label5.Font                     = 'Microsoft Sans Serif,10'
 
 $Label6                          = New-Object system.Windows.Forms.Label
-$Label6.text                     = "Copia Local"
+$Label6.text                     = "Backup Local"
 $Label6.AutoSize                 = $true
 $Label6.width                    = 25
 $Label6.height                   = 10
-$Label6.location                 = New-Object System.Drawing.Point(230,25)
+$Label6.location                 = New-Object System.Drawing.Point(225,25)
 $Label6.Font                     = 'Microsoft Sans Serif,10'
 
 $Label7                          = New-Object system.Windows.Forms.Label
-$Label7.text                     = "Copia Servidor"
+$Label7.text                     = "Backup Servidor"
 $Label7.AutoSize                 = $true
 $Label7.width                    = 25
 $Label7.height                   = 10
-$Label7.location                 = New-Object System.Drawing.Point(350,25)
+$Label7.location                 = New-Object System.Drawing.Point(345,25)
 $Label7.Font                     = 'Microsoft Sans Serif,10'
 
 $LabelDL_Local                   = New-Object system.Windows.Forms.Label
@@ -316,8 +318,9 @@ function Refresh{
     If ($DataModDillunsLocal.LastWriteTime.ToShortDateString() -ne $DataModDillunsServer.LastWriteTime.ToShortDateString()){ 
         $LabelDL_Local.ForeColor = "Red"
     } else {
-        $LabelDL_Local.ForeColor = "Green"
+        $LabelDL_Local.ForeColor = "Green"       
     }
+
     If ($DataModDimartsLocal.LastWriteTime.ToShortDateString() -ne $DataModDimartsServer.LastWriteTime.ToShortDateString() ){ 
         $LabelDM_Local.ForeColor = "Red"
     } else {
@@ -344,7 +347,6 @@ function Refresh{
 
 }
 
-
 #----------------------------------------------------------------------------------------------------------
 #PS1 CODE
 #----------------------------------------------------------------------------------------------------------
@@ -353,11 +355,11 @@ function Refresh{
 $ErrorActionPreference= "silentlyContinue"
 
 #Variables usuari/pass
-$User = "DOMAIN\User"
-$Pwd = "Pa$$w0rd"
+$User = "TSE\eferrer"
+$Pwd = "Primera13"
 
 #Variables d'origen i destí
-$ruta_origen = "\\x.x.x.x\folder"
+$ruta_origen = "\\10.49.1.175\Client"
 $ruta_desti = "C:\Backup"
 $backup_dilluns = "scepinstall.exe"
 $backup_dimarts = "scepinstall.exe"
