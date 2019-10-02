@@ -1,7 +1,8 @@
-Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.drawing
 
-
+#FORMULARI PROPIETATS
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '620,350'
 $Form.text                       = "BACKUP"
@@ -10,7 +11,16 @@ $Form.MinimizeBox                = $false
 $Form.MaximizeBox                = $false
 $Form.FormBorderStyle            = 'FixedDialog'
 $Form.StartPosition              = "CenterScreen"
-$Form.Icon                      = $null
+$Form.Icon                       = $null
+
+#PESTANYES PROPIETATS 
+$tabControl                      = New-object System.Windows.Forms.TabControl
+$tabControl.Size                 = '620,350'
+
+#PESTANYA 1
+
+$Tab1                            = New-Object System.Windows.Forms.TabPage
+$Tab1.Text                       = "Backup”
 
 $Button1                         = New-Object system.Windows.Forms.Button
 $Button1.text                    = "Dilluns"
@@ -57,180 +67,282 @@ $TextBox1.multiline              = $true
 $TextBox1.Scrollbars             = "Vertical" 
 $TextBox1.width                  = 580
 $TextBox1.height                 = 200
-$TextBox1.location               = New-Object System.Drawing.Point(20,90)
+$TextBox1.location               = New-Object System.Drawing.Point(20,70)
 $TextBox1.Font                   = 'Microsoft Sans Serif,10'
 
 $Button6                         = New-Object system.Windows.Forms.Button
 $Button6.text                    = "Clear"
-$Button6.width                   = 120
+$Button6.width                   = 160
 $Button6.height                  = 30
-$Button6.location                = New-Object System.Drawing.Point(480,304)
+$Button6.location                = New-Object System.Drawing.Point(440,285)
 $Button6.Font                    = 'Microsoft Sans Serif,10'
 $Button6.Add_Click({Neteja})
 
 $Button7                         = New-Object system.Windows.Forms.Button
 $Button7.text                    = "Copia tota la setmana"
-$Button7.width                   = 280
+$Button7.width                   = 400
 $Button7.height                  = 30
-$Button7.location                = New-Object System.Drawing.Point(20,304)
+$Button7.location                = New-Object System.Drawing.Point(20,285)
 $Button7.Font                    = 'Microsoft Sans Serif,10'
 $Button7.Add_Click({All})
 
-$Button8                         = New-Object system.Windows.Forms.Button
-$Button8.text                    = "Refresca dates copia"
-$Button8.width                   = 160
-$Button8.height                  = 30
-$Button8.location                = New-Object System.Drawing.Point(310,304)
-$Button8.Font                    = 'Microsoft Sans Serif,10'
-$Button8.Add_Click({DataModificacio})
+#PESTANYA2
+
+$Tab2                            = New-Object System.Windows.Forms.TabPage
+$Tab2.Text                       = "Estat copia”
 
 $Label1                          = New-Object system.Windows.Forms.Label
+$Label1.text                     = "Dilluns"
 $Label1.AutoSize                 = $true
-$Label1.width                    = 100
-$Label1.height                   = 30
-$Label1.location                 = New-Object System.Drawing.Point(35,60)
+$Label1.width                    = 25
+$Label1.height                   = 10
+$Label1.location                 = New-Object System.Drawing.Point(100,60)
 $Label1.Font                     = 'Microsoft Sans Serif,10'
 
 $Label2                          = New-Object system.Windows.Forms.Label
+$Label2.text                     = "Dimarts"
 $Label2.AutoSize                 = $true
-$Label2.width                    = 100
-$Label2.height                   = 30
-$Label2.location                 = New-Object System.Drawing.Point(155,60)
+$Label2.width                    = 25
+$Label2.height                   = 10
+$Label2.location                 = New-Object System.Drawing.Point(100,100)
 $Label2.Font                     = 'Microsoft Sans Serif,10'
 
 $Label3                          = New-Object system.Windows.Forms.Label
+$Label3.text                     = "Dimecres"
 $Label3.AutoSize                 = $true
-$Label3.width                    = 100
-$Label3.height                   = 30
-$Label3.location                 = New-Object System.Drawing.Point(275,60)
+$Label3.width                    = 25
+$Label3.height                   = 10
+$Label3.location                 = New-Object System.Drawing.Point(100,140)
 $Label3.Font                     = 'Microsoft Sans Serif,10'
 
 $Label4                          = New-Object system.Windows.Forms.Label
+$Label4.text                     = "Dijous"
 $Label4.AutoSize                 = $true
-$Label4.width                    = 100
-$Label4.height                   = 30
-$Label4.location                 = New-Object System.Drawing.Point(395,60)
+$Label4.width                    = 25
+$Label4.height                   = 10
+$Label4.location                 = New-Object System.Drawing.Point(100,180)
 $Label4.Font                     = 'Microsoft Sans Serif,10'
 
 $Label5                          = New-Object system.Windows.Forms.Label
+$Label5.text                     = "Divendres"
 $Label5.AutoSize                 = $true
-$Label5.width                    = 100
-$Label5.height                   = 30
-$Label5.location                 = New-Object System.Drawing.Point(515,60)
+$Label5.width                    = 25
+$Label5.height                   = 10
+$Label5.location                 = New-Object System.Drawing.Point(100,220)
 $Label5.Font                     = 'Microsoft Sans Serif,10'
 
-$Form.controls.AddRange(@($Button1,$Button2,$Button3,$Button4,$Button5,$TextBox1,$Button6,$Button7,$Button8,$Label1,$Label2,$Label3,$Label4,$Label5))
+$Label6                          = New-Object system.Windows.Forms.Label
+$Label6.text                     = "Copia Local"
+$Label6.AutoSize                 = $true
+$Label6.width                    = 25
+$Label6.height                   = 10
+$Label6.location                 = New-Object System.Drawing.Point(230,25)
+$Label6.Font                     = 'Microsoft Sans Serif,10'
 
-#---------
+$Label7                          = New-Object system.Windows.Forms.Label
+$Label7.text                     = "Copia Servidor"
+$Label7.AutoSize                 = $true
+$Label7.width                    = 25
+$Label7.height                   = 10
+$Label7.location                 = New-Object System.Drawing.Point(350,25)
+$Label7.Font                     = 'Microsoft Sans Serif,10'
+
+$LabelDL_Local                   = New-Object system.Windows.Forms.Label
+$LabelDL_Local.AutoSize          = $true
+$LabelDL_Local.width             = 25
+$LabelDL_Local.height            = 10
+$LabelDL_Local.location          = New-Object System.Drawing.Point(230,60)
+$LabelDL_Local.Font              = 'Microsoft Sans Serif,10'
+
+$LabelDL_Server                  = New-Object system.Windows.Forms.Label
+$LabelDL_Server.AutoSize         = $true
+$LabelDL_Server.width            = 25
+$LabelDL_Server.height           = 10
+$LabelDL_Server.location         = New-Object System.Drawing.Point(358,60)
+$LabelDL_Server.Font             = 'Microsoft Sans Serif,10'
+
+$LabelDM_Local                   = New-Object system.Windows.Forms.Label
+$LabelDM_Local.AutoSize          = $true
+$LabelDM_Local.width             = 25
+$LabelDM_Local.height            = 10
+$LabelDM_Local.location          = New-Object System.Drawing.Point(230,100)
+$LabelDM_Local.Font              = 'Microsoft Sans Serif,10'
+
+$LabelDM_Server                  = New-Object system.Windows.Forms.Label
+$LabelDM_Server.AutoSize         = $true
+$LabelDM_Server.width            = 25
+$LabelDM_Server.height           = 10
+$LabelDM_Server.location         = New-Object System.Drawing.Point(358,100)
+$LabelDM_Server.Font             = 'Microsoft Sans Serif,10'
+
+$LabelDX_Local                   = New-Object system.Windows.Forms.Label
+$LabelDX_Local.AutoSize          = $true
+$LabelDX_Local.width             = 25
+$LabelDX_Local.height            = 10
+$LabelDX_Local.location          = New-Object System.Drawing.Point(230,140)
+$LabelDX_Local.Font              = 'Microsoft Sans Serif,10'
+
+$LabelDX_Server                  = New-Object system.Windows.Forms.Label
+$LabelDX_Server.AutoSize         = $true
+$LabelDX_Server.width            = 25
+$LabelDX_Server.height           = 10
+$LabelDX_Server.location         = New-Object System.Drawing.Point(358,140)
+$LabelDX_Server.Font             = 'Microsoft Sans Serif,10'
+
+$LabelDJ_Local                   = New-Object system.Windows.Forms.Label
+$LabelDJ_Local.AutoSize          = $true
+$LabelDJ_Local.width             = 25
+$LabelDJ_Local.height            = 10
+$LabelDJ_Local.location          = New-Object System.Drawing.Point(230,180)
+$LabelDJ_Local.Font              = 'Microsoft Sans Serif,10'
+
+$LabelDJ_Server                  = New-Object system.Windows.Forms.Label
+$LabelDJ_Server.AutoSize         = $true
+$LabelDJ_Server.width            = 25
+$LabelDJ_Server.height           = 10
+$LabelDJ_Server.location         = New-Object System.Drawing.Point(358,180)
+$LabelDJ_Server.Font             = 'Microsoft Sans Serif,10'
+
+$LabelDV_Local                   = New-Object system.Windows.Forms.Label
+$LabelDV_Local.AutoSize          = $true
+$LabelDV_Local.width             = 25
+$LabelDV_Local.height            = 10
+$LabelDV_Local.location          = New-Object System.Drawing.Point(230,220)
+$LabelDV_Local.Font              = 'Microsoft Sans Serif,10'
+
+$LabelDV_Server                  = New-Object system.Windows.Forms.Label
+$LabelDV_Server.AutoSize         = $true
+$LabelDV_Server.width            = 25
+$LabelDV_Server.height           = 10
+$LabelDV_Server.location         = New-Object System.Drawing.Point(358,220)
+$LabelDV_Server.Font             = 'Microsoft Sans Serif,10'
+
+$Button8                         = New-Object system.Windows.Forms.Button
+$Button8.text                    = "Refrescar"
+$Button8.width                   = 350
+$Button8.height                  = 30
+$Button8.location                = New-Object System.Drawing.Point(135,280)
+$Button8.Font                    = 'Microsoft Sans Serif,10'
+$Button8.Add_Click({Refresh})
+
+#----------------------------------------------------------------------------------------------------------
 #FUNCIONS
-#---------
+#----------------------------------------------------------------------------------------------------------
 
 function dilluns{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti scepinstall.exe | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dilluns | foreach {$TextBox1.AppendText($_ + "`r`n")} 
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function dimarts{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti scepinstall.exe | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dimarts | foreach {$TextBox1.AppendText($_ + "`r`n")}  
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function dimecres{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti scepinstall.exe | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dimecres | foreach {$TextBox1.AppendText($_ + "`r`n")} 
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function dijous{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti scepinstall.exe | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dijous | foreach {$TextBox1.AppendText($_ + "`r`n")} 
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function divendres{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti scepinstall.exe | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_divendres | foreach {$TextBox1.AppendText($_ + "`r`n")}  
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function all{
     $mapeig
-    robocopy.exe $ruta_origen $ruta_desti arxiu.7z | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    robocopy.exe $ruta_origen $ruta_desti arxiu.7z | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    robocopy.exe $ruta_origen $ruta_desti arxiu.7z | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    robocopy.exe $ruta_origen $ruta_desti arxiu.7z | foreach {$TextBox1.AppendText($_ + "`r`n")} 
-    robocopy.exe $ruta_origen $ruta_desti arxiu.7z | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dilluns | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    robocopy.exe $ruta_origen $ruta_desti $backup_dimarts | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    robocopy.exe $ruta_origen $ruta_desti $backup_dimecres | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    robocopy.exe $ruta_origen $ruta_desti $backup_dijous | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    robocopy.exe $ruta_origen $ruta_desti $backup_divendres | foreach {$TextBox1.AppendText($_ + "`r`n")}
     $textbox1.AppendText("COPIA FINALITZADA") 
     $desmapeig
-    DataModificacio
+    Refresh
 }
 
 function Neteja{
     $textBox1.Clear()
 }
 
-function DataModificacio{
-    $Avui = Get-Date
 
-    $DataModDilluns = Get-Item C:\Backup\arxiu.7z -ErrorAction SilentlyContinue
-    $DataModDimarts = Get-Item C:\Backup\arxiu.7z -ErrorAction SilentlyContinue
-    $DataModDimecres = Get-Item C:\Backup\arxiu.7z -ErrorAction SilentlyContinue
-    $DataModDijous = Get-Item C:\Backup\arxiu.7z -ErrorAction SilentlyContinue
-    $DataModDivendres = Get-Item C:\Backup\arxiu.7z -ErrorAction SilentlyContinue
+function Refresh{
 
-    $label1.Text = $DataModDilluns.LastWriteTime.ToShortDateString() 
-    $label2.Text = $DataModDimarts.LastWriteTime.ToShortDateString() 
-    $label3.Text = $DataModDimecres.LastWriteTime.ToShortDateString() 
-    $label4.Text = $DataModDijous.LastWriteTime.ToShortDateString()
-    $label5.Text = $DataModDivendres.LastWriteTime.ToShortDateString()
+   
+    $DataModDillunsLocal = Get-Item ("$ruta_desti\$backup_dilluns") 
+    $DataModDimartsLocal = Get-Item ("$ruta_desti\$backup_dimarts") 
+    $DataModDimecresLocal = Get-Item ("$ruta_desti\$backup_dimecres") 
+    $DataModDijousLocal = Get-Item ("$ruta_desti\$backup_dijous") 
+    $DataModDivendresLocal = Get-Item ("$ruta_desti\$backup_divendres") 
 
-    $DiferenciaTempsDL = New-TimeSpan -Start $DataModDilluns.LastWriteTime -End $Avui
-    If ($DiferenciaTempsDL.Days -ge 7) {
-        $Label1.ForeColor = "Red"
-    }else{
-        $Label1.ForeColor = "Green"
+    $DataModDillunsServer = Get-item ("$ruta_origen\$backup_dilluns") 
+    $DataModDimartsServer = Get-Item ("$ruta_origen\$backup_dimarts") 
+    $DataModDimecresServer = Get-Item ("$ruta_origen\$backup_dimarts") 
+    $DataModDijousServer = Get-Item ("$ruta_origen\$backup_dimarts") 
+    $DataModDivendresServer = Get-Item ("$ruta_origen\$backup_dimarts")
+
+    $LabelDL_Local.Text = $DataModDillunsLocal.LastWriteTime.ToShortDateString() 
+    $LabelDM_Local.Text = $DataModDimartsLocal.LastWriteTime.ToShortDateString() 
+    $LabelDX_Local.Text = $DataModDimecresLocal.LastWriteTime.ToShortDateString() 
+    $LabelDJ_Local.Text = $DataModDijousLocal.LastWriteTime.ToShortDateString()
+    $LabelDV_Local.Text = $DataModDivendresLocal.LastWriteTime.ToShortDateString()
+
+    $LabelDL_Server.Text = $DataModDillunsServer.LastWriteTime.ToShortDateString()
+    $LabelDM_Server.Text = $DataModDimartsServer.LastWriteTime.ToShortDateString() 
+    $LabelDX_Server.Text = $DataModDimecresServer.LastWriteTime.ToShortDateString() 
+    $LabelDJ_Server.Text = $DataModDijousServer.LastWriteTime.ToShortDateString() 
+    $LabelDV_Server.Text = $DataModDivendresServer.LastWriteTime.ToShortDateString() 
+
+   
+    If ($DataModDillunsLocal.LastWriteTime.ToShortDateString() -ne $DataModDillunsServer.LastWriteTime.ToShortDateString()){ 
+        $LabelDL_Local.ForeColor = "Red"
+    } else {
+        $LabelDL_Local.ForeColor = "Green"
+    }
+    If ($DataModDimartsLocal.LastWriteTime.ToShortDateString() -ne $DataModDimartsServer.LastWriteTime.ToShortDateString() ){ 
+        $LabelDM_Local.ForeColor = "Red"
+    } else {
+        $LabelDM_Local.ForeColor = "Green"
     }
 
-    $DiferenciaTempsDM = New-TimeSpan -Start $DataModDimarts.LastWriteTime -End $Avui
-    If ($DiferenciaTempsDM.Days -ge 7) {
-        $Label2.ForeColor = "Red"
-    }else{
-        $Label2.ForeColor = "Green"
+    If ($DataModDimecresLocal.LastWriteTime.ToShortDateString() -ne $DataModDimecresLocal.LastWriteTime.ToShortDateString() ){ 
+        $LabelDX_Local.ForeColor = "Red"
+    } else {
+        $LabelDX_Local.ForeColor = "Green"
     }
 
-    $DiferenciaTempsDX = New-TimeSpan -Start $DataModDimecres.LastWriteTime -End $Avui
-    If ($DiferenciaTempsDX.Days -ge 7) {
-        $Label3.ForeColor = "Red"
-    }else{
-        $Label3.ForeColor = "Green"
+    If ($DataModDijousLocal.LastWriteTime.ToShortDateString() -ne $DataModDijousLocal.LastWriteTime.ToShortDateString() ){ 
+        $LabelDJ_Local.ForeColor = "Red"
+    } else {
+        $LabelDJ_Local.ForeColor = "Green"
     }
 
-    $DiferenciaTempsDJ = New-TimeSpan -Start $DataModDijous.LastWriteTime -End $Avui
-    If ($DiferenciaTempsDJ.Days -ge 7) {
-        $Label4.ForeColor = "Red"
-    }else{
-        $Label4.ForeColor = "Green"
+    If ($DataModDivendresLocal.LastWriteTime.ToShortDateString() -ne $DataModDivendresLocal.LastWriteTime.ToShortDateString() ){ 
+        $LabelDV_Local.ForeColor = "Red"
+    } else {
+        $LabelDV_Local.ForeColor = "Green"
     }
 
-    $DiferenciaTempsDV = New-TimeSpan -Start $DataModDivendres.LastWriteTime -End $Avui
-    If ($DiferenciaTempsDV.Days -ge 7) {
-        $Label5.ForeColor = "Red"
-    }else{
-        $Label5.ForeColor = "Green"
-    }
-    
 }
 
 
@@ -238,24 +350,40 @@ function DataModificacio{
 #PS1 CODE
 #----------------------------------------------------------------------------------------------------------
 
+#Omet errors (per si no existeix copia en local)
+$ErrorActionPreference= 'silentlycontinue'
+
 #Variables usuari/pass
-$User = "DOMAIN\user"
-$Pwd = "Pa$$w0rd"
+$User = "Domain\user"
+$Pwd = "Pa$w0rd"
 
 #Variables d'origen i destí
-$ruta_origen = "\\Server\c$\folder"
+$ruta_origen = "\\x.x.x.x\Client"
 $ruta_desti = "C:\Backup"
+$backup_dilluns = "scepinstall.exe"
+$backup_dimarts = "_scepinstall.exe"
+$backup_dimecres = "_scepinstall.exe"
+$backup_dijous = "_scepinstall.exe"
+$backup_divendres = "_scepinstall.exe"
 
 #Mapeig destí amb validació / desmapeig
-$mapeig = net use \\Server\c$\folder /user:$User $Pwd
-$desmapeig = net use \\Server\c$\folder /d
+$mapeig = net use $ruta_origen /user:$User $Pwd
+$desmapeig = net use $ruta_origen /d
 
 #Creació de destí en cas de no existir
 If(!(test-path $ruta_desti)){
     New-Item -ItemType Directory -Force -Path $ruta_desti | Out-Null
 }
 
-DataModificacio
+Refresh
+
+#----------------------------------------------------------------------------------------------------------
+#AFEGIR AL FORMULARI
+#----------------------------------------------------------------------------------------------------------
+$Form.Controls.Add($tabControl)
+$TabControl.Controls.AddRange(@($Tab1,$Tab2)) 
+$Tab1.Controls.AddRange(@($Button1,$Button2,$Button3,$Button4,$Button5,$TextBox1,$Button6,$Button7))
+$Tab2.Controls.AddRange(@($Label1,$Label2,$Label3,$Label4,$Label5,$Label6,$Label7,$Button8,$LabelDL_Local,$LabelDL_Server,$LabelDM_Local,$LabelDM_Server,$LabelDX_Local,$LabelDX_Server,$LabelDJ_Local,$LabelDJ_Server,$LabelDV_Local,$LabelDV_Server))
 
 #----------------------------------------------------------------------------------------------------------
 #MOSTRAR FORMULARI
