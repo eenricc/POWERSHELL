@@ -24,7 +24,6 @@ $tabControl.Size                 = '620,350'
 ##PESTANYA 1
 $Tab1                            = New-Object System.Windows.Forms.TabPage
 $Tab1.Text                       = "Backup”
-
 $Button1                         = New-Object system.Windows.Forms.Button
 $Button1.text                    = "Dilluns"
 $Button1.width                   = 100
@@ -32,7 +31,6 @@ $Button1.height                  = 30
 $Button1.location                = New-Object System.Drawing.Point(20,20)
 $Button1.Font                    = 'Microsoft Sans Serif,10'
 $Button1.Add_Click({dilluns})
-
 $Button2                         = New-Object system.Windows.Forms.Button
 $Button2.text                    = "Dimarts"
 $Button2.width                   = 100
@@ -40,7 +38,6 @@ $Button2.height                  = 30
 $Button2.location                = New-Object System.Drawing.Point(140,20)
 $Button2.Font                    = 'Microsoft Sans Serif,10'
 $Button2.Add_Click({dimarts})
-
 $Button3                         = New-Object system.Windows.Forms.Button
 $Button3.text                    = "Dimecres"
 $Button3.width                   = 100
@@ -48,7 +45,6 @@ $Button3.height                  = 30
 $Button3.location                = New-Object System.Drawing.Point(260,20)
 $Button3.Font                    = 'Microsoft Sans Serif,10'
 $Button3.Add_Click({dimecres})
-
 $Button4                         = New-Object system.Windows.Forms.Button
 $Button4.text                    = "Dijous"
 $Button4.width                   = 100
@@ -56,7 +52,6 @@ $Button4.height                  = 30
 $Button4.location                = New-Object System.Drawing.Point(380,20)
 $Button4.Font                    = 'Microsoft Sans Serif,10'
 $Button4.Add_Click({dijous})
-
 $Button5                         = New-Object system.Windows.Forms.Button
 $Button5.text                    = "Divendres"
 $Button5.width                   = 100
@@ -64,7 +59,6 @@ $Button5.height                  = 30
 $Button5.location                = New-Object System.Drawing.Point(500,20)
 $Button5.Font                    = 'Microsoft Sans Serif,10'
 $Button5.Add_Click({divendres})
-
 $TextBox1                        = New-Object system.Windows.Forms.TextBox
 $TextBox1.multiline              = $true
 $TextBox1.Scrollbars             = "Vertical" 
@@ -72,7 +66,6 @@ $TextBox1.width                  = 580
 $TextBox1.height                 = 200
 $TextBox1.location               = New-Object System.Drawing.Point(20,70)
 $TextBox1.Font                   = 'Microsoft Sans Serif,10'
-
 $Button6                         = New-Object system.Windows.Forms.Button
 $Button6.text                    = "Neteja"
 $Button6.width                   = 160
@@ -80,7 +73,6 @@ $Button6.height                  = 30
 $Button6.location                = New-Object System.Drawing.Point(440,285)
 $Button6.Font                    = 'Microsoft Sans Serif,10'
 $Button6.Add_Click({Neteja})
-
 $Button7                         = New-Object system.Windows.Forms.Button
 $Button7.text                    = "Copia tota la setmana"
 $Button7.width                   = 400
@@ -88,7 +80,6 @@ $Button7.height                  = 30
 $Button7.location                = New-Object System.Drawing.Point(20,285)
 $Button7.Font                    = 'Microsoft Sans Serif,10'
 $Button7.Add_Click({All})
-
 ##PESTANYA2
 $Tab2                            = New-Object System.Windows.Forms.TabPage
 $Tab2.Text                       = "Estat copia”
@@ -274,9 +265,13 @@ function divendres{
 function all{
     $mapeig
     robocopy.exe $ruta_origen $ruta_desti $backup_dilluns | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    $textbox1.AppendText($textRobo)
     robocopy.exe $ruta_origen $ruta_desti $backup_dimarts | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    $textbox1.AppendText($textRobo)
     robocopy.exe $ruta_origen $ruta_desti $backup_dimecres | foreach {$TextBox1.AppendText($_ + "`r`n")} 
+    $textbox1.AppendText($textRobo)
     robocopy.exe $ruta_origen $ruta_desti $backup_dijous | foreach {$TextBox1.AppendText($_ + "`r`n")}  
+    $textbox1.AppendText($textRobo)
     robocopy.exe $ruta_origen $ruta_desti $backup_divendres | foreach {$TextBox1.AppendText($_ + "`r`n")}
     $textbox1.AppendText($textRobo)
     $desmapeig
@@ -298,9 +293,9 @@ function Refresh{
 
     $DataModDillunsServer = Get-item ("$ruta_origen\$backup_dilluns") 
     $DataModDimartsServer = Get-Item ("$ruta_origen\$backup_dimarts") 
-    $DataModDimecresServer = Get-Item ("$ruta_origen\$backup_dimarts") 
-    $DataModDijousServer = Get-Item ("$ruta_origen\$backup_dimarts") 
-    $DataModDivendresServer = Get-Item ("$ruta_origen\$backup_dimarts")
+    $DataModDimecresServer = Get-Item ("$ruta_origen\$backup_dimecres") 
+    $DataModDijousServer = Get-Item ("$ruta_origen\$backup_dijous") 
+    $DataModDivendresServer = Get-Item ("$ruta_origen\$backup_divendres")
 
     $LabelDL_Local.Text = $DataModDillunsLocal.LastWriteTime.ToShortDateString() 
     $LabelDM_Local.Text = $DataModDimartsLocal.LastWriteTime.ToShortDateString() 
@@ -327,19 +322,19 @@ function Refresh{
         $LabelDM_Local.ForeColor = "Green"
     }
 
-    If ($DataModDimecresLocal.LastWriteTime.ToShortDateString() -ne $DataModDimecresLocal.LastWriteTime.ToShortDateString() ){ 
+    If ($DataModDimecresLocal.LastWriteTime.ToShortDateString() -ne $DataModDimecresServer.LastWriteTime.ToShortDateString() ){ 
         $LabelDX_Local.ForeColor = "Red"
     } else {
         $LabelDX_Local.ForeColor = "Green"
     }
 
-    If ($DataModDijousLocal.LastWriteTime.ToShortDateString() -ne $DataModDijousLocal.LastWriteTime.ToShortDateString() ){ 
+    If ($DataModDijousLocal.LastWriteTime.ToShortDateString() -ne $DataModDijousServer.LastWriteTime.ToShortDateString() ){ 
         $LabelDJ_Local.ForeColor = "Red"
     } else {
         $LabelDJ_Local.ForeColor = "Green"
     }
 
-    If ($DataModDivendresLocal.LastWriteTime.ToShortDateString() -ne $DataModDivendresLocal.LastWriteTime.ToShortDateString() ){ 
+    If ($DataModDivendresLocal.LastWriteTime.ToShortDateString() -ne $DataModDivendresServer.LastWriteTime.ToShortDateString() ){ 
         $LabelDV_Local.ForeColor = "Red"
     } else {
         $LabelDV_Local.ForeColor = "Green"
@@ -355,17 +350,17 @@ function Refresh{
 $ErrorActionPreference= "silentlyContinue"
 
 #Variables usuari/pass
-$User = "TSE\eferrer"
-$Pwd = "Primera13"
+$User = "Server\user"
+$Pwd = "Pa55w0rd"
 
 #Variables d'origen i destí
-$ruta_origen = "\\10.49.1.175\Client"
+$ruta_origen = "\\server\folder"
 $ruta_desti = "C:\Backup"
-$backup_dilluns = "scepinstall.exe"
-$backup_dimarts = "scepinstall.exe"
-$backup_dimecres = "scepinstall.exe"
-$backup_dijous = "scepinstall.exe"
-$backup_divendres = "scepinstall.exe"
+$backup_dilluns = "dilluns.7z"
+$backup_dimarts = "dimarts.7z"
+$backup_dimecres = "dimecres.7z"
+$backup_dijous = "dijous.7z"
+$backup_divendres = "divendres.7z"
 
 #Mapeig destí amb validació / desmapeig
 $mapeig = net use $ruta_origen /user:$User $Pwd
