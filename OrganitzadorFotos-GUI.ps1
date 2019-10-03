@@ -93,7 +93,7 @@ $Form.controls.AddRange(@($TextBox1,$Button1,$TextBox2,$Button2,$Label1,$Label2,
 # FUNCIONS
 #-------------------------------------------------------------------------------------------------------------
 
-function get-Folderlocation(){
+function get-Folderlocation{
     $app = New-Object -ComObject Shell.Application
     $folder = $app.BrowseForFolder(0,"",0,0)
     if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = "" }
