@@ -1,7 +1,9 @@
-﻿Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
-#FORMULARI
+#-----------------------------------------------------------------------------------
+# FORMULARI
+#-----------------------------------------------------------------------------------
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '538,432'
 $Form.text                       = "BACKUP INCREMENTAL"
@@ -113,49 +115,36 @@ $Button3.Add_Click({$TextBox2.text = Get-Folderlocation})
 
 $Form.controls.AddRange(@($Label1,$TextBox1,$Label2,$TextBox2,$Button1,$TextBox3,$RadioButton1,$RadioButton2,$Button2,$Button3,$Button4))
 
-#----------------------------------------------------------------------------------------------------------
-
-#PS1 CODE
-
+#-----------------------------------------------------------------------------------
+# FUNCIONS
+#-----------------------------------------------------------------------------------
 function backup{
     $origen = $TextBox1.text
     $desti = $TextBox2.text
-    If ($TextBox1.textlength -eq 0){
-        [System.Windows.MessageBox]::Show("El camp ORIGEN no te dades", "ORIGEN", "OK", "Error")
+    If (($TextBox1.textlength -eq 0) -or ((Test-Path $origen) -eq $false)){
+        [System.Windows.MessageBox]::Show("El camp ORIGEN no te dades o son incorrectes", "ORIGEN", "OK", "Error")
     }else{
-        If ((Test-Path $origen) -eq $false){
-            [System.Windows.MessageBox]::Show("No existeix origen",'ERROR','OK','Error')
+        If (($TextBox2.textlength -eq 0) -or ((Test-Path $desti) -eq $false)){
+            [System.Windows.MessageBox]::Show("El camp DESTI no te dades o son incorrectes", "DESTI", "OK", "Error")
         }else{
-            If ($TextBox2.textlength -eq 0){
-                [System.Windows.MessageBox]::Show("El camp DESTI no te dades", "DESTI", "OK", "Error")
+            If ($RadioButton1.Checked -eq $true){
+                robocopy "$origen" "$desti" /MIR /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
             }else{
-                If ((Test-Path $desti) -eq $false){
-                    $null = New-Item -ItemType directory -Path $desti
+                If ($RadioButton2.Checked -eq $true){
+                    robocopy "$origen" "$desti" /E /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
+                }else{
+                    [System.Windows.MessageBox]::Show('Selecciona tipus de copia','TIPUS COPIA','OK','Information')
                 }
-                    If ($RadioButton1.Checked -eq $true){
-                        robocopy "$origen" "$desti" /MIR /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
-                    }else{
-                        If ($RadioButton2.Checked -eq $true){
-                            robocopy "$origen" "$desti" /E /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
-                        }else{
-                            [System.Windows.MessageBox]::Show('Selecciona tipus de copia','TIPUS COPIA','OK','Information')
-                        }
-                    }
             }
         }
     }
 }
 
 
-function get-Folderlocation([string]$Message, [string]$InitialDirectory, [switch]$NoNewFolderButton)
-{
-    $browseForFolderOptions = 0
-    if ($NoNewFolderButton) { $browseForFolderOptions += 512 }
-
+function get-Folderlocation{
     $app = New-Object -ComObject Shell.Application
-    $folder = $app.BrowseForFolder(0, $Message, $browseForFolderOptions, $InitialDirectory)
-    if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = '' }
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($app) > $null
+    $folder = $app.BrowseForFolder(0,"",0,0)
+    if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = "" }
     return $selectedDirectory
 }
 
@@ -164,12 +153,15 @@ function Neteja{
 }
 
 function alerta{
-[System.Windows.MessageBox]::Show("Copia a la carpeta DESTÍ el contingut a ORIGEN." +"`r`n`r`n"+ "IMPORTANT: La copia mirall deixa la carpeta destí igual que origen. Si existeixen arxius a destí que no són a origen, els eliminarà.",'ALERTA','OK','Warning')
+    [System.Windows.MessageBox]::Show("Copia a la carpeta DESTÍ el contingut a ORIGEN." +"`r`n`r`n"+ "IMPORTANT: La copia mirall deixa la carpeta destí igual que origen. Si existeixen arxius a destí que no són a origen, els eliminarà.",'ALERTA','OK','Warning')
 }
 
 function info{
-[System.Windows.MessageBox]::Show("Afegeix a la carpeta DESTÍ el contingut a ORIGEN",'INFO','OK','Information')
+    [System.Windows.MessageBox]::Show("Afegeix a la carpeta DESTÍ el contingut a ORIGEN",'INFO','OK','Information')
 }
 
-#MOSTRAR FORMULARI
+#-----------------------------------------------------------------------------------
+# FORMULARI
+#-----------------------------------------------------------------------------------
+
 [void]$Form.ShowDialog()
