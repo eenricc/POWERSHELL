@@ -72,13 +72,21 @@ $TextBox3.Scrollbars             = "Vertical"
 
 $Button3                         = New-Object system.Windows.Forms.Button
 $Button3.text                    = "Endreça"
-$Button3.width                   = 300
+$Button3.width                   = 400
 $Button3.height                  = 30
-$Button3.location                = New-Object System.Drawing.Point(155,374)
+$Button3.location                = New-Object System.Drawing.Point(34,374)
 $Button3.Font                    = 'Microsoft Sans Serif,10'
 $Button3.Add_Click({principal})
 
-$Form.controls.AddRange(@($TextBox1,$Button1,$TextBox2,$Button2,$Label1,$Label2,$TextBox3,$Button3))
+$Button4                         = New-Object system.Windows.Forms.Button
+$Button4.text                    = "Neteja"
+$Button4.width                   = 120
+$Button4.height                  = 30
+$Button4.location                = New-Object System.Drawing.Point(445,374)
+$Button4.Font                    = 'Microsoft Sans Serif,10'
+$Button4.Add_Click({neteja})
+
+$Form.controls.AddRange(@($TextBox1,$Button1,$TextBox2,$Button2,$Label1,$Label2,$TextBox3,$Button3,$Button4))
 
 
 #-------------------------------------------------------------------------------------------------------------
@@ -104,10 +112,10 @@ Function principal{
     $DestiOtherVideo = $DestiOther + "\Video"
     $DestiJPGissue = $DestiOther + "\JPG"
 
-    If ((Test-Path $origen) -eq $false){
+    If (($TextBox1.textlength -eq 0) -or ((Test-Path $origen) -eq $false)){
         [System.Windows.MessageBox]::Show("No existeix origen",'ERROR','OK','Error')
     }else{
-        If ((Test-Path $desti) -eq $false){ 
+        If (($TextBox2.textlength -eq 0) -or ((Test-Path $desti) -eq $false)){ 
             [System.Windows.MessageBox]::Show("No existeix destí",'ERROR','OK','Error')
         }else{
         $Dir = get-childitem $origen -recurse | Where-Object{!($_.PSIsContainer)}
@@ -188,7 +196,12 @@ Function principal{
         $TextBox3.AppendText("Total: $total`n")   
         }
     }
+    
         
+}
+
+Function neteja{
+    $TextBox3.Clear()
 }
 
 
