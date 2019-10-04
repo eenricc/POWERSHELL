@@ -111,14 +111,10 @@ function get-Folderlocation{
 }
 
 function validaCarpeta{
-    If ($TextBox1.textlength -eq 0 -or $TextBox2.textlength -eq 0){
-        [System.Windows.MessageBox]::Show('Algun dels camps està buit','ERROR','OK','Error')
+    If ($TextBox1.textlength -eq 0 -or $TextBox2.textlength -eq 0 -or (!(test-path -path $TextBox1.text)) -or(!(test-path -path $TextBox2.text))){
+        [System.Windows.MessageBox]::Show('Cal omplenar els camps Origen/Destí amb dades correctes','ERROR','OK','Error')
     }else{
-        If ((test-path $TextBox1.text) -and (test-path $TextBox2.text)){
-            organitza
-        }else{
-            [System.Windows.MessageBox]::Show('Origen o destí no existeix','ERROR','OK','Error')
-        }
+        organitza
     }
 }
 
