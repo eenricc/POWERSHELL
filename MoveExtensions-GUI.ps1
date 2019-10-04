@@ -1,10 +1,9 @@
-﻿Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 #----------------------------------------------------------------------------------------------------------
-#FORMULARI
+# FORMULARI
 #---------------------------------------------------------------------------------------------------------- 
-
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '325,390'
 $Form.text                       = "COPIA EXTENSIONS"
@@ -26,7 +25,7 @@ $Label1.location                 = New-Object System.Drawing.Point(26,31)
 $Label1.Font                     = 'Microsoft Sans Serif,10'
 
 $Label2                          = New-Object system.Windows.Forms.Label
-$Label2.text                     = "Destí on copia:"
+$Label2.text                     = "Destí on copiar:"
 $Label2.AutoSize                 = $true
 $Label2.width                    = 25
 $Label2.height                   = 10
@@ -79,16 +78,16 @@ $TextBox4.ScrollBars             = "Both"
 $Button1                         = New-Object system.Windows.Forms.Button
 $Button1.text                    = "Cerca"
 $Button1.width                   = 60
-$Button1.height                  = 18
-$Button1.location                = New-Object System.Drawing.Point(236,51)
+$Button1.height                  = 25
+$Button1.location                = New-Object System.Drawing.Point(236,50)
 $Button1.Font                    = 'Microsoft Sans Serif,10'
 $Button1.Add_Click({$TextBox1.text = Get-Folderlocation})
 
 $Button2                         = New-Object system.Windows.Forms.Button
 $Button2.text                    = "Cerca"
 $Button2.width                   = 60
-$Button2.height                  = 18
-$Button2.location                = New-Object System.Drawing.Point(236,109)
+$Button2.height                  = 25
+$Button2.location                = New-Object System.Drawing.Point(236,108)
 $Button2.Font                    = 'Microsoft Sans Serif,10'
 $Button2.Add_Click({$TextBox2.text = Get-Folderlocation})
 
@@ -110,31 +109,22 @@ $Button4.location                = New-Object System.Drawing.Point(250,346)
 $Button4.Font                    = 'Microsoft Sans Serif,10'
 $Button4.Add_Click({Neteja})
 
-
-
 $Form.controls.AddRange(@($Label1,$TextBox1,$Button1,$Label2,$TextBox2,$Button2,$Label3,$TextBox3,$TextBox4,$Button3,$Button4))
 
 #----------------------------------------------------------------------------------------------------------
-#PS1 CODE
+# FUNCIONS
 #----------------------------------------------------------------------------------------------------------
-
-function get-Folderlocation([string]$Message, [string]$InitialDirectory, [switch]$NoNewFolderButton)
-{
-    $browseForFolderOptions = 0
-    if ($NoNewFolderButton) { $browseForFolderOptions += 512 }
-
+function get-Folderlocation{
     $app = New-Object -ComObject Shell.Application
-    $folder = $app.BrowseForFolder(0, $Message, $browseForFolderOptions, $InitialDirectory)
-    if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = '' }
-    [System.Runtime.Interopservices.Marshal]::ReleaseComObject($app) > $null
-    return $selectedDirectory
+    $folder = $app.BrowseForFolder(0,"",0,0)
+    if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = "" }
+    return $selectedDirectory   
 }
 
 function copiaExtensions{
     $origen = $TextBox1.text
     $desti = $TextBox2.text
     $extensio = "*." + $TextBox3.text
-
     If ($TextBox1.textlength -eq 0 -or $TextBox2.textlength -eq 0 -or $TextBox3.textlength -eq 0){
         [System.Windows.MessageBox]::Show('Algun dels camps està buit','ERROR','OK','Error')
     }else{
@@ -144,7 +134,7 @@ function copiaExtensions{
                 Move-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue
                 $TextBox4.AppendText($arxiu.fullname + "`r`n")
             }
-        $TextBox4.AppendText("`r`n" + "----------" + "FINALITZAT" + "----------" + "`r`n")
+            $TextBox4.AppendText("`r`n" + "----------" + "FINALITZAT" + "----------" + "`r`n")
         }else{
             [System.Windows.MessageBox]::Show('Origen o destí no existeix','ERROR','OK','Error')
         }
@@ -155,8 +145,7 @@ function Neteja{
     $textBox4.Clear()
 }
 
-
 #----------------------------------------------------------------------------------------------------------
-#MOSTRAR FORMULARI
+# MOSTRAR FORMULARI
 #----------------------------------------------------------------------------------------------------------
 [void]$Form.ShowDialog()
