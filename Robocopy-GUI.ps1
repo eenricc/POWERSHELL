@@ -6,14 +6,13 @@ Add-Type -AssemblyName System.Windows.Forms
 #-----------------------------------------------------------------------------------
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '538,432'
-$Form.text                       = "BACKUP INCREMENTAL"
+$Form.text                       = "BACKUP"
 $Form.TopMost                    = $false
 $Form.MinimizeBox                = $false
 $Form.MaximizeBox                = $false
 $Form.FormBorderStyle            = 'FixedDialog'
 $Form.StartPosition              = "CenterScreen"
 $Form.Icon                       = $null
-
 
 #------------- ETIQUETA ORIGEN -------------
 $Label1                          = New-Object system.Windows.Forms.Label
@@ -56,7 +55,7 @@ $Button1.width                   = 130
 $Button1.height                  = 33
 $Button1.location                = New-Object System.Drawing.Point(345,95)
 $Button1.Font                    = 'Microsoft Sans Serif,10'
-$Button1.Add_Click({backup})
+$Button1.Add_Click({validaCarpeta})
 
 #------------- BOTO CLEAR -------------
 $Button4                         = New-Object system.Windows.Forms.Button
@@ -118,28 +117,33 @@ $Form.controls.AddRange(@($Label1,$TextBox1,$Label2,$TextBox2,$Button1,$TextBox3
 #-----------------------------------------------------------------------------------
 # FUNCIONS
 #-----------------------------------------------------------------------------------
-function backup{
-    $origen = $TextBox1.text
-    $desti = $TextBox2.text
-    If (($TextBox1.textlength -eq 0) -or ((Test-Path $origen) -eq $false)){
-        [System.Windows.MessageBox]::Show("El camp ORIGEN no te dades o son incorrectes", "ORIGEN", "OK", "Error")
+function validaCarpeta{
+    If ($TextBox1.textlength -eq 0 -or $TextBox2.textlength -eq 0){
+        [System.Windows.MessageBox]::Show('Algun dels camps està buit','ERROR','OK','Error')
     }else{
-        If (($TextBox2.textlength -eq 0) -or ((Test-Path $desti) -eq $false)){
-            [System.Windows.MessageBox]::Show("El camp DESTI no te dades o son incorrectes", "DESTI", "OK", "Error")
-        }else{
+        If ((test-path $TextBox1.text) -and (test-path $TextBox2.text)){
             If ($RadioButton1.Checked -eq $true){
-                robocopy "$origen" "$desti" /MIR /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
+                backup("mirall")
             }else{
-                If ($RadioButton2.Checked -eq $true){
-                    robocopy "$origen" "$desti" /E /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}
+                If ($RadioButton2.Checked -eq $true){ 
+                    backup("afegint") 
                 }else{
-                    [System.Windows.MessageBox]::Show('Selecciona tipus de copia','TIPUS COPIA','OK','Information')
+                    [System.Windows.MessageBox]::Show('Selecciona tipus de copia','ERROR','OK','Error')
                 }
             }
+            
+        }else{
+            [System.Windows.MessageBox]::Show('Origen o destí no existeix','ERROR','OK','Error')
         }
     }
 }
 
+function backup($comanda){
+    $origen = $TextBox1.text
+    $desti = $TextBox2.text
+    If ($comanda -eq "mirall"){robocopy "$origen" "$desti" /MIR /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}}
+    If ($comanda -eq "afegint"){robocopy "$origen" "$desti" /E /FFT /Z /R:2 /W:5 | foreach {$TextBox3.AppendText($_ + "`r`n")}}       
+}
 
 function get-Folderlocation{
     $app = New-Object -ComObject Shell.Application
