@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms
 #---------------------------------------------------------------------------------------------------------- 
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '325,390'
-$Form.text                       = "COPIA EXTENSIONS"
+$Form.text                       = "MOU EXTENSIONS"
 $Form.TopMost                    = $false
 $Form.TopMost                    = $false
 $Form.MinimizeBox                = $false
@@ -91,14 +91,14 @@ $Button2.location                = New-Object System.Drawing.Point(236,108)
 $Button2.Font                    = 'Microsoft Sans Serif,10'
 $Button2.Add_Click({$TextBox2.text = Get-Folderlocation})
 
-#------------- BOTO COPIA -------------
+#------------- BOTO MOU -------------
 $Button3                         = New-Object system.Windows.Forms.Button
-$Button3.text                    = "COPIA"
+$Button3.text                    = "MOU"
 $Button3.width                   = 220
 $Button3.height                  = 30
 $Button3.location                = New-Object System.Drawing.Point(26,346)
 $Button3.Font                    = 'Microsoft Sans Serif,10'
-$Button3.Add_Click({copiaExtensions})
+$Button3.Add_Click({Valida})
 
 #------------- BOTO CLEAR -------------
 $Button4                         = New-Object system.Windows.Forms.Button
@@ -121,24 +121,28 @@ function get-Folderlocation{
     return $selectedDirectory   
 }
 
-function copiaExtensions{
-    $origen = $TextBox1.text
-    $desti = $TextBox2.text
-    $extensio = "*." + $TextBox3.text
+function Valida{
     If ($TextBox1.textlength -eq 0 -or $TextBox2.textlength -eq 0 -or $TextBox3.textlength -eq 0){
         [System.Windows.MessageBox]::Show('Algun dels camps està buit','ERROR','OK','Error')
     }else{
-        If ((test-path $origen) -and (test-path $desti)){
-            $Dir = get-childitem $origen -recurse -Filter $extensio
-            Foreach ($arxiu in $Dir){
-                Move-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue
-                $TextBox4.AppendText($arxiu.fullname + "`r`n")
-            }
-            $TextBox4.AppendText("`r`n" + "----------" + "FINALITZAT" + "----------" + "`r`n")
+        If ((test-path $TextBox1.text) -and (test-path $TextBox2.text)){
+            copiaExtensions
         }else{
             [System.Windows.MessageBox]::Show('Origen o destí no existeix','ERROR','OK','Error')
         }
     }
+}
+
+function copiaExtensions{
+    $origen = $TextBox1.text
+    $desti = $TextBox2.text
+    $extensio = "*." + $TextBox3.text
+    $Dir = get-childitem $origen -recurse -Filter $extensio
+    Foreach ($arxiu in $Dir){
+        Move-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue
+        $TextBox4.AppendText($arxiu.fullname + "`r`n")
+    }
+    $TextBox4.AppendText("`r`n" + "----------" + "FINALITZAT" + "----------" + "`r`n")      
 }
 
 function Neteja{
