@@ -1,5 +1,6 @@
-Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName PresentationFramework
 
 #----------------------------------------------------------------------------------------------------------
 # FORMULARI
