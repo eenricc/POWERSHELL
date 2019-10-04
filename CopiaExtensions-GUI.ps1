@@ -162,7 +162,7 @@ function tipusCopia{
         copiaExtensions("Copia")
     }else{
         If ($RadioButton2.Checked -eq $true){
-            copiaExtensions("Moviment")
+            copiaExtensions("Mou")
         }else{
             [System.Windows.MessageBox]::Show('Selecciona tipus de copia','TIPUS COPIA','OK','Information')
         }
@@ -181,11 +181,11 @@ function copiaExtensions($comanda){
         If ((Test-Path $desti\$arxiu) -eq $true){
             $newname = $arxiu.BaseName + " (D" + $i + ")" + $arxiu.Extension
             If ($comanda -eq "Copia"){ Copy-Item $arxiu.FullName -Destination $desti\$newname }
-            If ($comanda -eq "Moviment"){ Move-Item $arxiu.FullName -Destination $desti\$newname }
+            If ($comanda -eq "Mou"){ Move-Item $arxiu.FullName -Destination $desti\$newname }
             $i +=1
         }else{
             If ($comanda -eq "Copia"){ Copy-Item $arxiu.FullName -Destination $desti }  
-            If ($comanda -eq "Moviment"){ Move-Item $arxiu.FullName -Destination $desti }  
+            If ($comanda -eq "Mou"){ Move-Item $arxiu.FullName -Destination $desti }  
         }              
         $ProgressBar1.Value = $ProgressBarCount
         $ProgressBarCount = $ProgressBarCount + 1
@@ -195,7 +195,7 @@ function copiaExtensions($comanda){
     If ($Dir.Count -eq "0"){
         [System.Windows.MessageBox]::Show('No hi han arxius amb extensió indicada a origen','Copia Extensions','OK','Information')
     }else{
-        [System.Windows.MessageBox]::Show("Acció: $comanda finalitzat","$comanda Extensions",'OK','Information')
+        [System.Windows.MessageBox]::Show("Acció finalitzada","$comanda Extensions",'OK','Information')
     }
     $ProgressBar1.Value = 0
     $Label4.Text = ""
