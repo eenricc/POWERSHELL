@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms
 #---------------------------------------------------------------------------------------------------------- 
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '325,390'
-$Form.text                       = "MOU EXTENSIONS"
+$Form.text                       = "COPIA/MOU EXTENSIONS"
 $Form.TopMost                    = $false
 $Form.TopMost                    = $false
 $Form.MinimizeBox                = $false
@@ -21,7 +21,7 @@ $Label1.text                     = "Origen on buscar:"
 $Label1.AutoSize                 = $true
 $Label1.width                    = 25
 $Label1.height                   = 10
-$Label1.location                 = New-Object System.Drawing.Point(26,31)
+$Label1.location                 = New-Object System.Drawing.Point(26,28)
 $Label1.Font                     = 'Microsoft Sans Serif,10'
 
 $Label2                          = New-Object system.Windows.Forms.Label
@@ -29,7 +29,7 @@ $Label2.text                     = "Destí on copiar:"
 $Label2.AutoSize                 = $true
 $Label2.width                    = 25
 $Label2.height                   = 10
-$Label2.location                 = New-Object System.Drawing.Point(26,89)
+$Label2.location                 = New-Object System.Drawing.Point(26,86)
 $Label2.Font                     = 'Microsoft Sans Serif,10'
 
 $Label3                          = New-Object system.Windows.Forms.Label
@@ -37,7 +37,7 @@ $Label3.text                     = "Extensió:"
 $Label3.AutoSize                 = $true
 $Label3.width                    = 25
 $Label3.height                   = 10
-$Label3.location                 = New-Object System.Drawing.Point(26,149)
+$Label3.location                 = New-Object System.Drawing.Point(26,148)
 $Label3.Font                     = 'Microsoft Sans Serif,10'
 
 #------------- TEXTBOX ORIGEN -------------
@@ -74,6 +74,23 @@ $TextBox4.Multiline              = $true
 $TextBox4.Font                   = 'Microsoft Sans Serif,7'
 $TextBox4.ScrollBars             = "Both"
 
+#------------- SELECTOR -------------
+$RadioButton1                    = New-Object system.Windows.Forms.RadioButton
+$RadioButton1.text               = "Copia"
+$RadioButton1.AutoSize           = $true
+$RadioButton1.width              = 104
+$RadioButton1.height             = 20
+$RadioButton1.location           = New-Object System.Drawing.Point(160,146)
+$RadioButton1.Font               = 'Microsoft Sans Serif,10'
+
+$RadioButton2                    = New-Object system.Windows.Forms.RadioButton
+$RadioButton2.text               = "Mou"
+$RadioButton2.AutoSize           = $true
+$RadioButton2.width              = 104
+$RadioButton2.height             = 20
+$RadioButton2.location           = New-Object System.Drawing.Point(232,146)
+$RadioButton2.Font               = 'Microsoft Sans Serif,10'
+
 #------------- BOTONS BROWSE -------------
 $Button1                         = New-Object system.Windows.Forms.Button
 $Button1.text                    = "Cerca"
@@ -93,8 +110,8 @@ $Button2.Add_Click({$TextBox2.text = Get-Folderlocation})
 
 #------------- BOTO MOU -------------
 $Button3                         = New-Object system.Windows.Forms.Button
-$Button3.text                    = "MOU"
-$Button3.width                   = 220
+$Button3.text                    = "INICIA"
+$Button3.width                   = 190
 $Button3.height                  = 30
 $Button3.location                = New-Object System.Drawing.Point(26,346)
 $Button3.Font                    = 'Microsoft Sans Serif,10'
@@ -102,14 +119,14 @@ $Button3.Add_Click({Valida})
 
 #------------- BOTO CLEAR -------------
 $Button4                         = New-Object system.Windows.Forms.Button
-$Button4.text                    = "Clear"
-$Button4.width                   = 50
+$Button4.text                    = "NETEJA"
+$Button4.width                   = 80
 $Button4.height                  = 30
-$Button4.location                = New-Object System.Drawing.Point(250,346)
+$Button4.location                = New-Object System.Drawing.Point(220,346)
 $Button4.Font                    = 'Microsoft Sans Serif,10'
 $Button4.Add_Click({Neteja})
 
-$Form.controls.AddRange(@($Label1,$TextBox1,$Button1,$Label2,$TextBox2,$Button2,$Label3,$TextBox3,$TextBox4,$Button3,$Button4))
+$Form.controls.AddRange(@($Label1,$TextBox1,$Button1,$Label2,$TextBox2,$Button2,$Label3,$TextBox3,$TextBox4,$Button3,$Button4,$RadioButton1,$RadioButton2))
 
 #----------------------------------------------------------------------------------------------------------
 # FUNCIONS
@@ -126,20 +143,33 @@ function Valida{
         [System.Windows.MessageBox]::Show('Algun dels camps està buit','ERROR','OK','Error')
     }else{
         If ((test-path $TextBox1.text) -and (test-path $TextBox2.text)){
-            copiaExtensions
+            tipusCopia
         }else{
             [System.Windows.MessageBox]::Show('Origen o destí no existeix','ERROR','OK','Error')
         }
     }
 }
 
-function copiaExtensions{
+function tipusCopia{
+    If ($RadioButton1.Checked -eq $true){
+        inicia("copia")
+    }else{
+        If ($RadioButton2.Checked -eq $true){
+            inicia("mou")
+        }else{
+            [System.Windows.MessageBox]::Show('Selecciona tipus de copia','TIPUS COPIA','OK','Information')
+        }
+    }
+}
+
+function inicia($comanda){
     $origen = $TextBox1.text
     $desti = $TextBox2.text
     $extensio = "*." + $TextBox3.text
     $Dir = get-childitem $origen -recurse -Filter $extensio
     Foreach ($arxiu in $Dir){
-        Move-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue
+        If ($comanda -eq "copia"){ Copy-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue }
+        If ($comanda -eq "mou"){ Move-Item -Path $arxiu.FullName -Destination $Desti -ErrorAction SilentlyContinue }
         $TextBox4.AppendText($arxiu.fullname + "`r`n")
     }
     $TextBox4.AppendText("`r`n" + "----------" + "FINALITZAT" + "----------" + "`r`n")      
