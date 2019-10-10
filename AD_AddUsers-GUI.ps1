@@ -50,6 +50,14 @@ $LabelPASS.height                = 10
 $LabelPASS.location              = New-Object System.Drawing.Point(22,115)
 $LabelPASS.Font                  = 'Microsoft Sans Serif,10'
 
+$LabelTIPUS                       = New-Object system.Windows.Forms.Label
+$LabelTIPUS.text                  = "Tipus de Password:"
+$LabelTIPUS.AutoSize              = $true
+$LabelTIPUS.width                 = 25
+$LabelTIPUS.height                = 10
+$LabelTIPUS.location              = New-Object System.Drawing.Point(22,145)
+$LabelTIPUS.Font                  = 'Microsoft Sans Serif,10'
+
 # -------
 # TEXTBOX
 # -------
@@ -66,6 +74,7 @@ $TextBoxOU.width                 = 285
 $TextBoxOU.height                = 20
 $TextBoxOU.location              = New-Object System.Drawing.Point(97,51)
 $TextBoxOU.Font                  = 'Microsoft Sans Serif,10'
+$TextBoxOU.ReadOnly              = $true
 
 $TextBoxDOM                      = New-Object system.Windows.Forms.TextBox
 $TextBoxDOM.multiline            = $false
@@ -85,8 +94,8 @@ $TextBoxPASS.Font                = 'Microsoft Sans Serif,10'
 $TextBoxRESULT                   = New-Object system.Windows.Forms.TextBox
 $TextBoxRESULT.multiline         = $true
 $TextBoxRESULT.width             = 430
-$TextBoxRESULT.height            = 215
-$TextBoxRESULT.location          = New-Object System.Drawing.Point(20,150)
+$TextBoxRESULT.height            = 190
+$TextBoxRESULT.location          = New-Object System.Drawing.Point(20,175)
 $TextBoxRESULT.Font              = 'Microsoft Sans Serif,10'
 $TextBoxRESULT.ScrollBars        = "Both"
 
@@ -133,16 +142,45 @@ $ButtonINICI.location            = New-Object System.Drawing.Point(20,378)
 $ButtonINICI.Font                = 'Microsoft Sans Serif,10'
 $ButtonINICI.Add_Click({inicia})
 
+$ButtonEXPORT                     = New-Object system.Windows.Forms.Button
+$ButtonEXPORT.text                = "Export"
+$ButtonEXPORT.width               = 70
+$ButtonEXPORT.height              = 30
+$ButtonEXPORT.location            = New-Object System.Drawing.Point(318,378)
+$ButtonEXPORT.Font                = 'Microsoft Sans Serif,10'
+$ButtonEXPORT.Add_Click({export})
+
 $ButtonCLEAN                     = New-Object system.Windows.Forms.Button
 $ButtonCLEAN.text                = "Neteja"
-$ButtonCLEAN.width               = 130
+$ButtonCLEAN.width               = 60
 $ButtonCLEAN.height              = 30
-$ButtonCLEAN.location            = New-Object System.Drawing.Point(321,378)
+$ButtonCLEAN.location            = New-Object System.Drawing.Point(391,378)
 $ButtonCLEAN.Font                = 'Microsoft Sans Serif,10'
 $ButtonCLEAN.Add_Click({$TextBoxRESULT.clear()})
 
-$Form.controls.AddRange(@($TextBoxCSV,$LabelCSV,$ButtonCSV,$LabelOU,$TextBoxOU,$ButtonOU,$TextBoxDOM,$LabelDOM,$TextBoxRESULT,$TextBoxPASS,$ButtonINICI,$ButtonCLEAN,$LabelPASS,$ButtonDOM,$ButtonPASS))
+# ------------
+# RADIOBUTTONS
+# ------------
+$RadioButtonMATEIX                    = New-Object system.Windows.Forms.RadioButton
+$RadioButtonMATEIX.text               = "Tots igual"
+$RadioButtonMATEIX.AutoSize           = $true
+$RadioButtonMATEIX.width              = 104
+$RadioButtonMATEIX.height             = 20
+$RadioButtonMATEIX.location           = New-Object System.Drawing.Point(160,144)
+$RadioButtonMATEIX.Font               = 'Microsoft Sans Serif,10'
+$RadioButtonMATEIX.Checked            = $True
+$RadioButtonMATEIX.Add_Click({passIgual})
 
+$RadioButtonINDV                    = New-Object system.Windows.Forms.RadioButton
+$RadioButtonINDV.text               = "Tots diferent"
+$RadioButtonINDV.AutoSize           = $true
+$RadioButtonINDV.width              = 104
+$RadioButtonINDV.height             = 20
+$RadioButtonINDV.location           = New-Object System.Drawing.Point(260,144)
+$RadioButtonINDV.Font               = 'Microsoft Sans Serif,10'
+$RadioButtonINDV.Add_Click({passDiferent})
+
+$Form.controls.AddRange(@($TextBoxCSV,$LabelCSV,$ButtonCSV,$LabelOU,$TextBoxOU,$ButtonOU,$TextBoxDOM,$LabelDOM,$TextBoxRESULT,$TextBoxPASS,$ButtonINICI,$ButtonCLEAN,$LabelPASS,$ButtonDOM,$ButtonPASS,$RadioButtonMATEIX,$RadioButtonINDV,$LabelTIPUS,$ButtonEXPORT))
 
 #----------------------------------------------------------------------------------------------------------
 # FUNCIONS
@@ -151,84 +189,81 @@ $Form.controls.AddRange(@($TextBoxCSV,$LabelCSV,$ButtonCSV,$LabelOU,$TextBoxOU,$
 function seleccionaArxiu{   
     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{Filter = 'Arxiu (AD_AddUsers.csv) | AD_AddUsers.csv'}
     $FileBrowser.ShowDialog() | Out-Null
-    $seleccio = $FileBrowser.FileName
-    $TextBoxCSV.text = $seleccio 
+    $Seleccio = $FileBrowser.FileName
+    $TextBoxCSV.text = $Seleccio 
 }
 
-Function Cerca-ActiveDirectory { 
-	#FORMULARI  
-    $FormAD                      = New-Object Windows.Forms.form 
-    $FormAD.ClientSize           = '600,400'
-    $FormAD.text                 = "Selecciona OU on crear els usuaris" 
-    $FormAD.TopMost              = $false 
-    $FormAD.MinimizeBox          = $false
-    $FormAD.MaximizeBox          = $false
-    $FormAD.FormBorderStyle      = 'FixedDialog'
-    $FormAD.StartPosition        = "CenterScreen"    
-    
+function Cerca-ActiveDirectory {
+	#FORMULARI ADSEARCH
+    $FormADSearch                    = New-Object 'System.Windows.Forms.Form'
+    $FormADSearch.ClientSize         = '300, 450'
+    $FormADSearch.Text               = "Selecciona OU destí"
+    $FormADSearch.MaximizeBox        = $False
+	$FormADSearch.MinimizeBox        = $False
+    $FormADSearch.StartPosition      = 'CenterScreen'
+    $FormADSearch.FormBorderStyle    = 'FixedDialog'
+	
+    #BOTO OK
+    $buttonOK                        = New-Object 'System.Windows.Forms.Button'	
+    $buttonOK.Location               = '9, 415'
+	$buttonOK.Size                   = '282, 30'
+	$buttonOK.Text                   = "Selecciona OU"
+    $ButtonOK.Add_click({
+        $TextBoxOU.text = $Script:OUSelected
+        $FormADSearch.Close()})
+	
     #TREEVIEW
-    $TV                          = New-Object Windows.Forms.TreeView 
-    $TV.Location                 = New-Object System.Drawing.Size(10,10) 
-    $TV.size                     = New-Object System.Drawing.Size(580,350)    
+	$TreeView                        = New-Object 'System.Windows.Forms.TreeView'
+    $TreeView.Location               = '10, 10'
+	$TreeView.Size                   = '280, 400'
+	$TreeView.add_NodeMouseClick([System.Windows.Forms.TreeNodeMouseClickEventHandler]{
+		$thisOU=[adsi]$_.Node.Name
+		if( -not $_.Node.Nodes){
+            $searcher=[adsisearcher]'objectClass=organizationalunit'
+			$searcher.SearchRoot=$_.Node.Name
+			$searcher.SearchScope='OneLevel'
+			$searcher.PropertiesToLoad.Add('name')
+			$OUs=$searcher.Findall()
+			foreach($ou in $OUs){
+				$_.Node.Nodes.Add($ou.Path,$ou.Properties['name'])
+			} 
+		}
+		$_.Node.Expand()
+        $Script:OUSelected = $thisOU.DistinguishedName
+	})
     
-    #BOTÓ
-    $btnSelect                   = New-Object System.Windows.Forms.Button 
-    $btnSelect.text              = "Selecciona" 
-    $btnSelect.Location          = New-Object System.Drawing.Size(250,365) 
-    $btnSelect.size              = New-Object System.Drawing.Size(100,30) 
-    $btnSelect.add_Click({ 
-        $Script:Return           = New-Object system.directoryservices.directoryEntry("LDAP://$($TV.SelectedNode.text)") 
-        $FormAD.close() 
-    }) 
-    
-    #TREENODE ROOT
-    $root=[ADSI]''
-    $TNRoot                      = New-Object System.Windows.Forms.TreeNode("Root") 
-    $TNRoot.Name                 = $root.name 
-    $TNRoot.Text                 = $root.distinguishedName 
-    $TNRoot.tag                  = "NotEnumerated" 
-    
-    #DESPLEGABLE OUs
-    $TV.add_AfterSelect({ 
-        if ($this.SelectedNode.tag -eq "NotEnumerated") { 
-            $de = [ADSI]"LDAP://$($this.SelectedNode.text)"
-            $de.psBase.get_Children() |
-                foreach { 
-                    $TN = new-object System.Windows.Forms.TreeNode 
-                    $TN.Name = $_.name 
-                    $TN.Text = $_.distinguishedName 
-                    $TN.tag = "NotEnumerated" 
-                    $this.SelectedNode.Nodes.Add($TN) 
-                } 
-            $this.SelectedNode.tag = "Enumerated" 
-        } 
-    }) 
-    
-    #AFEGIR OBJECTES A FORMULARI
-    [void]$TV.Nodes.Add($TNRoot) 
-    $FormAD.Controls.Add($TV) 
-    $FormAD.Controls.Add($btnSelect) 
-    $FormAD.Add_Shown({$FormAD.Activate()}) 
-    [void]$FormAD.showdialog() 
+    #AFEGIR AL FORMULARI
+	$FormADSearch.add_Load({
+		$rootCN=[ADSI]''
+		$nodeName=$rootCN.Name
+		$key="LDAP://$($rootCN.DistinguishedName)"
+		$TreeView.Nodes.Add($key,$nodeName)	
+    })
 
-    #RETORNA OU SELECCIONADA
-    $TextBoxOU.text = $Script:Return.distinguishedName
-    
+    $FormADSearch.Controls.AddRange(@($TreeView,$buttonOK))
+	
+    #MOSTRA FORMULARI
+    [void]$FormADSearch.ShowDialog()  
 } 
 
 function Inicia{
-    If ($TextBoxCSV.textlength -eq 0 -or $TextBoxOU.textlength -eq 0 -or $TextBoxDOM.textlength -eq 0 -or $TextBoxPASS.textlength -eq 0){
+    If ($TextBoxCSV.textlength -eq 0 -or $TextBoxOU.textlength -eq 0 -or $TextBoxDOM.textlength -eq 0 -or ($TextBoxPASS.ReadOnly -eq $False -and $TextBoxPASS.textlength -eq 0)){
         [System.Windows.MessageBox]::Show('Cal omplenar tots els camps','ERROR','OK','Error')
     }else{
         $OU = $TextBoxOU.text
         $ArxiuCSV = $TextBoxCSV.text
         $Domain = $TextBoxDOM.text
-        $Password = $TextBoxPASS.text
-
         $Users = Import-Csv -Delimiter ";" -Path "$ArxiuCSV"
-        $pass = ConvertTo-SecureString -String $password -AsPlainText -Force  
-
-        foreach ($User in $Users) {          
+        foreach ($User in $Users) {
+            If ($RadioButtonMATEIX.Checked -eq $true){
+                $Password = $TextBoxPASS.text
+                $pass = ConvertTo-SecureString -String $password -AsPlainText -Force  
+            }else{
+                generaPass
+                $Password = $TextBoxPASS.text
+                $pass = ConvertTo-SecureString -String $password -AsPlainText -Force  
+            } 
+                    
             $hash = @{
                 Name = $user.givenname + " " + $user.Surname 
                 Displayname = $user.givenname + " " + $user.Surname 
@@ -251,6 +286,8 @@ function Inicia{
                 New-ADUser @hash -PassThru -PasswordNeverExpires $False | Out-Null
                 $TextBoxRESULT.AppendText("Usuari: " + $user.GivenName + " " + $user.Surname + "`r`n")
                 $TextBoxRESULT.AppendText("Estat: OK`r`n") 
+                $TextBoxRESULT.AppendText("User: " + $user.sAMAccountName + "`r`n") 
+                $TextBoxRESULT.AppendText("Password: " + $Password + "`r`n")
                 $TextBoxRESULT.appendText("---------------------------`r`n") 
             }Catch{
                 $TextBoxRESULT.AppendText("Usuari: " + $user.GivenName + " " + $user.Surname + "`r`n")   
@@ -265,9 +302,7 @@ function Inicia{
 }
 
 function canviaDomini{
-
     $TextBoxDOM.ReadOnly = $False
-
 }
 
 function generaPass{
@@ -279,6 +314,23 @@ function generaPass{
     $TextBoxPASS.Text = $Password
 }
 
+function passDiferent{
+    $TextBoxPASS.text = ""
+    $TextBoxPASS.ReadOnly = $True
+    $ButtonPASS.Enabled = $False
+}
+
+function passIgual{
+    $TextBoxPASS.ReadOnly = $False
+    $ButtonPASS.Enabled = $True
+}
+
+function export{
+    $filename = [System.IO.Path]::GetTempFileName()
+    $TextBoxRESULT.text | Out-File $filename
+	Start-Process notepad $filename		
+}
+
 #----------------------------------------------------------------------------------------------------------
 # PS1 CODE
 #----------------------------------------------------------------------------------------------------------
@@ -287,7 +339,7 @@ Try{
     $Domini = Get-ADDomain
     $DominiUser = "@" + $Domini.DNSRoot
     $TextBoxDOM.Text = $DominiUser
-}catch{
+}Catch{
     $TextBoxRESULT.AppendText("ERROR: Sense acces al AD des d'aquest equip`r`n")
     $ButtonCSV.Enabled = $False
     $ButtonOU.Enabled = $False
@@ -296,8 +348,6 @@ Try{
     $ButtonCLEAN.Enabled = $False
     $ButtonPASS.Enabled = $False
 }
-
-
 
 #----------------------------------------------------------------------------------------------------------
 # MOSTRAR FORMULARI
