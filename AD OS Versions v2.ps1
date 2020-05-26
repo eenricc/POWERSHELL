@@ -27,9 +27,10 @@ function ConvertTo-OperatingSystem {
         'Unknown'
     }
 }
-
+$counter = 0
 $Computers = Get-ADComputer -Filter * -properties Name, OperatingSystem, OperatingSystemVersion, LastLogonDate, whenCreated, Enabled
 $ComputerList = foreach ($computer in $Computers) {
+    $counter = $counter + 1
     Try { $IP = ([System.Net.Dns]::GetHostAddresses($computer.DNSHostName)).IPAddressToString }
     Catch {$IP = "Unknown"}
     [PSCustomObject] @{
@@ -47,7 +48,8 @@ $ComputerList = foreach ($computer in $Computers) {
     
 }
 #RECOMPTE DE VERSIONS DE SO
-$ComputerList | Group-Object -Property System | Sort-Object -Property Count -Descending | Format-Table -Property Name, Count #| Out-File -Append C:\Users\enric.ferrer\Desktop\1.csv -Encoding UTF8
+$ComputerList | Group-Object -Property System | Sort-Object -Property Count -Descending | Format-Table -Property Name, Count #| Out-File -Append C:\Users\iser\Desktop\1.csv -Encoding UTF8
+Write-host "Total Computer Objects in AD:" $counter
 
 #DETALL VERSIONS SO
-#$ComputerList | Sort-Object -Property System -Descending | Format-Table -AutoSize #| Out-File -Append C:\Users\enric.ferrer\Desktop\2.csv -Encoding UTF8
+$ComputerList | Sort-Object -Property System -Descending | Out-GridView | Format-Table -AutoSize #| Out-File -Append C:\Users\user\Desktop\2.csv -Encoding UTF8
