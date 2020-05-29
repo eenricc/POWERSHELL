@@ -1,3 +1,14 @@
+###############################################################################################################################################################
+# SCRIPT:            AD OS Versions 
+# VERSIÓ:            2.2
+# DESCRIPCIÓ:        Extreu del AD tots els equips amb informació d'IP i versió de SO. Inclou LastLogon, data de creació i si estan Enabled/Disabled
+# CREADOR:           Enric Ferrer
+# MODIFICAT PER:     Enric Ferrer
+# DATA MODIFICACIÓ:  29/05/2020
+###############################################################################################################################################################
+
+
+#FUNCIÓ PER ESTABLIR BUILD DE WIN10
 function ConvertTo-OperatingSystem {
     [CmdletBinding()]
     param(
@@ -18,38 +29,40 @@ function ConvertTo-OperatingSystem {
             '10.0 (18898)' = 'Windows 10 Insider Preview'
         }
         $System = $Systems[$OperatingSystemVersion]
+      #SI L'EQUIP NO ES WIN10 MOSTRA OS INDICAT PER AD
     } elseif ($OperatingSystem -notlike 'Windows 10*') {
         $System = $OperatingSystem
     }
-    if ($System) {
-        $System
-    } else {
-        'Unknown'
-    }
+    #EN CAS QUE NO HI HAGI INFORMACIÓ DE OS AL AD MOSTRA UNKNOWN
+    if ($System) { $System } else { 'Unknown' }
 }
+
+#SCRIPT
 $counter = 0
+#PODEM AFEGIR PROPIETATS A EXTREURE DEL GET-ADCOMPUTER
 $Computers = Get-ADComputer -Filter * -properties Name, OperatingSystem, OperatingSystemVersion, LastLogonDate, whenCreated, Enabled
 $ComputerList = foreach ($computer in $Computers) {
     $counter = $counter + 1
+    #ESTABLIM QUE SI NO HI HA IP AL DNS MOSTRI UNKNOWN
     Try { $IP = ([System.Net.Dns]::GetHostAddresses($computer.DNSHostName)).IPAddressToString }
     Catch {$IP = "Unknown"}
     [PSCustomObject] @{
-        NAME                   = $computer.Name
-        #OperatingSystem        = $computer.OperatingSystem
-        #OperatingSystemVersion = $computer.OperatingSystemVersion
-        SYSTEM                 = ConvertTo-OperatingSystem -OperatingSystem $computer.OperatingSystem -OperatingSystemVersion $computer.OperatingSystemVersion
-        IP                     = $IP
-        LastLogonDate          = $computer.LastLogonDate
-        WhenCreated            = $computer.WhenCreated  
-        Enabled                = $computer.Enabled        
+        NAME                    = $computer.Name
+        OperatingSystem         = $computer.OperatingSystem
+        OperatingSystemVersion  = $computer.OperatingSystemVersion
+        SYSTEM                  = ConvertTo-OperatingSystem -OperatingSystem $computer.OperatingSystem -OperatingSystemVersion $computer.OperatingSystemVersion
+        IP                      = $IP
+        LastLogonDate           = $computer.LastLogonDate
+        WhenCreated             = $computer.WhenCreated  
+        Enabled                 = $computer.Enabled        
     }
     
     
     
 }
 #RECOMPTE DE VERSIONS DE SO
-$ComputerList | Group-Object -Property System | Sort-Object -Property Count -Descending | Format-Table -Property Name, Count #| Out-File -Append C:\Users\iser\Desktop\1.csv -Encoding UTF8
+$ComputerList | Group-Object -Property System | Sort-Object -Property Count -Descending | Format-Table -Property Name, Count #| Out-File -Append C:\Users\enric.ferrer\Desktop\1.csv -Encoding UTF8
 Write-host "Total Computer Objects in AD:" $counter
 
-#DETALL VERSIONS SO
-$ComputerList | Sort-Object -Property System -Descending | Out-GridView | Format-Table -AutoSize #| Out-File -Append C:\Users\user\Desktop\2.csv -Encoding UTF8
+#DETALL VERSIONS SO (Per realitzar exportació a arxiu, treure el out-gridview)
+#$ComputerList | Sort-Object -Property System -Descending | Out-GridView | Format-Table -AutoSize #| Out-File -Append C:\Users\enric.ferrer\Desktop\2.csv -Encoding UTF8
