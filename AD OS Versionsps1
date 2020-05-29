@@ -1,7 +1,7 @@
 ###############################################################################################################################################################
 # SCRIPT:            AD OS Versions 
-# VERSIÓ:            2.2
-# DESCRIPCIÓ:        Extreu del AD tots els equips amb informació d'IP i versió de SO. Inclou LastLogon, data de creació i si estan Enabled/Disabled
+# VERSIÓ:            2.3
+# DESCRIPCIÓ:        Extreu del AD tots els equips amb informació d'IP del DNS i versió de SO. Inclou LastLogon, data de creació i si estan Enabled/Disabled
 # CREADOR:           Enric Ferrer
 # MODIFICAT PER:     Enric Ferrer
 # DATA MODIFICACIÓ:  29/05/2020
@@ -43,7 +43,7 @@ $counter = 0
 $Computers = Get-ADComputer -Filter * -properties Name, OperatingSystem, OperatingSystemVersion, LastLogonDate, whenCreated, Enabled
 $ComputerList = foreach ($computer in $Computers) {
     $counter = $counter + 1
-    #ESTABLIM QUE SI NO HI HA IP AL DNS MOSTRI UNKNOWN
+    #ESTABLIM QUE SI NO HI HA IP AL DNS MOSTRI UNKNOWN (BUSCA IP AL DNS NO AL AD)
     Try { $IP = ([System.Net.Dns]::GetHostAddresses($computer.DNSHostName)).IPAddressToString }
     Catch {$IP = "Unknown"}
     [PSCustomObject] @{
