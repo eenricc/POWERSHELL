@@ -1,10 +1,10 @@
 ###############################################################################################################################################################
 # SCRIPT:            AD OS Versions 
-# VERSIÓ:            2.3
+# VERSIÓ:            2.4
 # DESCRIPCIÓ:        Extreu del AD tots els equips amb informació d'IP del DNS i versió de SO. Inclou LastLogon, data de creació i si estan Enabled/Disabled
 # CREADOR:           Enric Ferrer
 # MODIFICAT PER:     Enric Ferrer
-# DATA MODIFICACIÓ:  29/05/2020
+# DATA MODIFICACIÓ:  25/06/2020
 ###############################################################################################################################################################
 
 
@@ -40,7 +40,7 @@ function ConvertTo-OperatingSystem {
 #SCRIPT
 $counter = 0
 #PODEM AFEGIR PROPIETATS A EXTREURE DEL GET-ADCOMPUTER
-$Computers = Get-ADComputer -Filter * -properties Name, OperatingSystem, OperatingSystemVersion, LastLogonDate, whenCreated, Enabled
+$Computers = Get-ADComputer -Filter * -properties Name, DnsHostName, OperatingSystem, OperatingSystemVersion, LastLogonDate, whenCreated, Enabled
 $ComputerList = foreach ($computer in $Computers) {
     $counter = $counter + 1
     #ESTABLIM QUE SI NO HI HA IP AL DNS MOSTRI UNKNOWN (BUSCA IP AL DNS NO AL AD)
@@ -48,8 +48,9 @@ $ComputerList = foreach ($computer in $Computers) {
     Catch {$IP = "Unknown"}
     [PSCustomObject] @{
         NAME                    = $computer.Name
-        OperatingSystem         = $computer.OperatingSystem
-        OperatingSystemVersion  = $computer.OperatingSystemVersion
+        DNSHostName             = $computer.DnsHostName
+        #OperatingSystem         = $computer.OperatingSystem
+        #OperatingSystemVersion  = $computer.OperatingSystemVersion
         SYSTEM                  = ConvertTo-OperatingSystem -OperatingSystem $computer.OperatingSystem -OperatingSystemVersion $computer.OperatingSystemVersion
         IP                      = $IP
         LastLogonDate           = $computer.LastLogonDate
@@ -64,5 +65,5 @@ $ComputerList = foreach ($computer in $Computers) {
 $ComputerList | Group-Object -Property System | Sort-Object -Property Count -Descending | Format-Table -Property Name, Count #| Out-File -Append C:\Users\enric.ferrer\Desktop\1.csv -Encoding UTF8
 Write-host "Total Computer Objects in AD:" $counter
 
-#DETALL VERSIONS SO (Per realitzar exportació a arxiu, treure el out-gridview)
-#$ComputerList | Sort-Object -Property System -Descending | Out-GridView | Format-Table -AutoSize #| Out-File -Append C:\Users\enric.ferrer\Desktop\2.csv -Encoding UTF8
+#DETALL VERSIONS SO 
+$ComputerList | Sort-Object -Property System -Descending | Format-Table | Out-File -Append C:\Users\enric.ferrer\Desktop\2.csv -Encoding UTF8
