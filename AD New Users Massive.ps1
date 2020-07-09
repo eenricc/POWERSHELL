@@ -2,6 +2,8 @@
 $OU = "OU=test,DC=cosentinogroup,DC=net"
 $ArxiuCSV = "C:\Users\enric.ferrer\Desktop\Scripts\AD New Users Massive.csv" #DESAR EN UTF-8
 $Domain = "@cosentino.com"
+
+$GroupName = "testGroup"
 #------------------------------------
 
 #----------------------------------------------------------------------------------------------------------
@@ -37,8 +39,20 @@ foreach ($User in $Users) {
         Write-Host "Error al crear usuari" $user.GivenName $user.Surname -ForegroundColor "Red"
     }
     
+    #AFEGIR GRUP AL MEMBER OF DEL USUARI CREAT
+    $UsuariNom = $user.sAMAccountName
+    $UsuariAD = Get-ADUser -Filter {SamAccountName -eq $UsuariNom}
+    Try {
+        Add-ADGroupMember -Identity $GroupName -Members $UsuariAD
+        Write-Host "Afegit usuari" $user.GivenName $user.Surname "als grups indicats" -ForegroundColor "Green"
+        Write-Host "-----------------------------"
+    }catch{
+        Write-Host "NO S'ha afegit usuari" $user.GivenName $user.Surname "als grups indicats" -ForegroundColor "Red"
+        Write-Host "-----------------------------"
+        
+    }
+    
 } 
-
 #Crear arxiu AD New Users Massive.csv amb contingut:
 #Samaccountname;GivenName;Surname;description;password
 #Samanamer;Nombre;Ape Llidos;Test Algta;WWKMkksr04
